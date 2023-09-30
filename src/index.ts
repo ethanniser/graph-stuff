@@ -1,8 +1,8 @@
 export class Graph<T> {
   private adjacencyList: Map<T, Set<T>>;
 
-  constructor() {
-    this.adjacencyList = new Map<T, Set<T>>();
+  constructor(adjacencyList?: Map<T, Set<T>>) {
+    this.adjacencyList = adjacencyList ?? new Map<T, Set<T>>();
   }
 
   addVertex(vertex: T): void {
@@ -16,11 +16,7 @@ export class Graph<T> {
     this.addVertex(to);
 
     this.adjacencyList.get(from)!.add(to);
-    this.adjacencyList.get(to)!.add(from); // Uncomment this line for an undirected graph
-  }
-
-  loadFromAdjacencyList(adjacencyList: Map<T, Set<T>>): void {
-    this.adjacencyList = adjacencyList;
+    this.adjacencyList.get(to)!.add(from);
   }
 
   toAdjacencyList(): Map<T, Set<T>> {
@@ -81,7 +77,6 @@ export class Graph<T> {
   }
 }
 
-
 export function findCutVertices<T>(graph: Graph<T>): Set<T> {
   const cutVertices = new Set<T>();
   let time = 0;
@@ -130,8 +125,3 @@ export function findCutVertices<T>(graph: Graph<T>): Set<T> {
 
   return cutVertices;
 }
-
-
-
-
-
