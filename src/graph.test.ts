@@ -50,4 +50,27 @@ describe("Graph - Finding Cut Vertices", () => {
     const cutVertices = findCutVertices(graph);
     expect(cutVertices).toStrictEqual(new Set([1, 4, 5]));
   });
+
+  it("evan test 2", () => {
+    const graph = new Graph(
+      new Map([
+        [0, new Set([1])],
+        [1, new Set([0, 2, 3])],
+        [2, new Set([1, 4])],
+        [3, new Set([1, 4])],
+        [4, new Set([2, 3, 5])],
+        [5, new Set([4, 6])],
+        [6, new Set([5])],
+        [7, new Set([8])],
+        [8, new Set([7])],
+        [9, new Set([])],
+        [10, new Set([11])],
+        [11, new Set([10, 12])],
+        [12, new Set([11])],
+      ])
+    );
+
+    const cutVertices = findCutVertices(graph);
+    expect(cutVertices).toStrictEqual(new Set([1, 4, 5, 11]));
+  });
 });
