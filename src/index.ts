@@ -144,7 +144,6 @@ export function findTriangles(graph: Graph): Set<Triangle> {
   const triangles = new Map<string, Triangle>();
   const vertices = graph.getVertices();
   const edges = createEdgeList(graph);
-  console.log(vertices, edges);
 
   for (const vertex of vertices) {
     for (const edge of edges) {
