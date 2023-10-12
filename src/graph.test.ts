@@ -1,5 +1,5 @@
 import { describe, it, expect } from "bun:test";
-import { Graph, findCutVertices } from ".";
+import { Graph, findCutVertices, findTriangles } from ".";
 
 describe("Graph - Finding Cut Vertices", () => {
   it("should find cut vertices in a simple graph", () => {
@@ -72,5 +72,53 @@ describe("Graph - Finding Cut Vertices", () => {
 
     const cutVertices = findCutVertices(graph);
     expect(cutVertices).toStrictEqual(new Set([1, 4, 5, 11]));
+  });
+});
+
+describe("finding triangles", () => {
+  it("basic triangle", () => {
+    const graph = new Graph(
+      new Map([
+        [1, new Set([2, 3])],
+        [2, new Set([1, 3])],
+        [3, new Set([1, 2])],
+      ])
+    );
+
+    const triangles = findTriangles(graph);
+    expect(triangles).toStrictEqual(new Set([new Set([1, 2, 3])]));
+  });
+
+  it("multiple triangles", () => {
+    const graph = new Graph(
+      new Map([
+        [1, new Set([2, 3])],
+        [2, new Set([1, 3, 4])],
+        [3, new Set([1, 2, 4])],
+        [4, new Set([2, 3, 5])],
+        [5, new Set([4, 6])],
+        [6, new Set([5, 7])],
+        [7, new Set([6])],
+      ])
+    );
+
+    const triangles = findTriangles(graph);
+    expect(triangles).toStrictEqual(
+      new Set([new Set([1, 2, 3]), new Set([2, 3, 4])])
+    );
+  });
+
+  it("no triangles", () => {
+    const graph = new Graph(
+      new Map([
+        [1, new Set([2])],
+        [2, new Set([1])],
+        [3, new Set([4])],
+        [4, new Set([3])],
+      ])
+    );
+
+    const triangles = findTriangles(graph);
+    expect(triangles).toStrictEqual(new Set());
   });
 });

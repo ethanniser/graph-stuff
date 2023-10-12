@@ -1,17 +1,17 @@
-export class Graph<T> {
-  private adjacencyList: Map<T, Set<T>>;
+export class Graph {
+  private adjacencyList: Map<number, Set<number>>;
 
-  constructor(adjacencyList?: Map<T, Set<T>>) {
-    this.adjacencyList = adjacencyList ?? new Map<T, Set<T>>();
+  constructor(adjacencyList?: Map<number, Set<number>>) {
+    this.adjacencyList = adjacencyList ?? new Map<number, Set<number>>();
   }
 
-  addVertex(vertex: T): void {
+  addVertex(vertex: number): void {
     if (!this.adjacencyList.has(vertex)) {
-      this.adjacencyList.set(vertex, new Set<T>());
+      this.adjacencyList.set(vertex, new Set<number>());
     }
   }
 
-  addEdge(from: T, to: T): void {
+  addEdge(from: number, to: number): void {
     this.addVertex(from);
     this.addVertex(to);
 
@@ -19,18 +19,18 @@ export class Graph<T> {
     this.adjacencyList.get(to)!.add(from);
   }
 
-  toAdjacencyList(): Map<T, Set<T>> {
+  getAdjacencyList(): Readonly<Map<number, Set<number>>> {
     return this.adjacencyList;
   }
 
-  removeVertex(vertex: T): void {
+  removeVertex(vertex: number): void {
     this.adjacencyList.delete(vertex);
     for (const vertices of this.adjacencyList.values()) {
       vertices.delete(vertex);
     }
   }
 
-  removeEdge(from: T, to: T): void {
+  removeEdge(from: number, to: number): void {
     const fromNeighbors = this.adjacencyList.get(from);
     const toNeighbors = this.adjacencyList.get(to);
 
@@ -40,15 +40,15 @@ export class Graph<T> {
     }
   }
 
-  getNeighbors(vertex: T): Set<T> {
-    return this.adjacencyList.get(vertex) || new Set<T>();
+  getNeighbors(vertex: number): Set<number> {
+    return this.adjacencyList.get(vertex) || new Set<number>();
   }
 
-  getVertices(): T[] {
+  getVertices(): number[] {
     return [...this.adjacencyList.keys()];
   }
 
-  getDegree(vertex: T): number {
+  getDegree(vertex: number): number {
     return this.getNeighbors(vertex).size;
   }
 
@@ -60,11 +60,11 @@ export class Graph<T> {
     return this.adjacencyList.size === 0;
   }
 
-  contains(vertex: T): boolean {
+  contains(vertex: number): boolean {
     return this.adjacencyList.has(vertex);
   }
 
-  hasEdge(from: T, to: T): boolean {
+  hasEdge(from: number, to: number): boolean {
     const fromNeighbors = this.adjacencyList.get(from);
     const toNeighbors = this.adjacencyList.get(to);
 
@@ -77,18 +77,18 @@ export class Graph<T> {
   }
 }
 
-export function findCutVertices<T>(graph: Graph<T>): Set<T> {
-  const cutVertices = new Set<T>();
+export function findCutVertices(graph: Graph): Set<number> {
+  const cutVertices = new Set<number>();
   let time = 0;
 
-  const visited = new Set<T>();
-  const timeIn = new Map<T, number>();
-  const lowTime = new Map<T, number>();
+  const visited = new Set<number>();
+  const timeIn = new Map<number, number>();
+  const lownumberime = new Map<number, number>();
 
-  const dfs = (current: T, parent: T | null) => {
+  const dfs = (current: number, parent: number | null) => {
     visited.add(current);
     timeIn.set(current, time);
-    lowTime.set(current, time);
+    lownumberime.set(current, time);
     time++;
 
     const neighbors = graph.getNeighbors(current);
@@ -98,20 +98,20 @@ export function findCutVertices<T>(graph: Graph<T>): Set<T> {
       if (!visited.has(neighbor)) {
         childCount++;
         dfs(neighbor, current);
-        lowTime.set(
+        lownumberime.set(
           current,
-          Math.min(lowTime.get(current)!, lowTime.get(neighbor)!)
+          Math.min(lownumberime.get(current)!, lownumberime.get(neighbor)!)
         );
 
-        if (lowTime.get(neighbor)! >= timeIn.get(current)!) {
+        if (lownumberime.get(neighbor)! >= timeIn.get(current)!) {
           if (parent !== null || childCount > 1) {
             cutVertices.add(current);
           }
         }
       } else if (neighbor !== parent) {
-        lowTime.set(
+        lownumberime.set(
           current,
-          Math.min(lowTime.get(current)!, timeIn.get(neighbor)!)
+          Math.min(lownumberime.get(current)!, timeIn.get(neighbor)!)
         );
       }
     }
@@ -124,4 +124,37 @@ export function findCutVertices<T>(graph: Graph<T>): Set<T> {
   }
 
   return cutVertices;
+}
+
+function createEdgeList(graph: Graph): Set<[number, number]> {
+  const edgeList = new Set<[number, number]>();
+
+  for (const [key, value] of graph.getAdjacencyList()) {
+    for (const edge of value) {
+      edgeList.add([key, edge]);
+    }
+  }
+
+  return edgeList;
+}
+
+type Triangle = Set<number>;
+
+export function findTriangles(graph: Graph): Set<Triangle> {
+  const triangles = new Map<string, Triangle>();
+  const vertices = graph.getVertices();
+  const edges = createEdgeList(graph);
+  console.log(vertices, edges);
+
+  for (const vertex of vertices) {
+    for (const edge of edges) {
+      if (graph.hasEdge(vertex, edge[0]) && graph.hasEdge(vertex, edge[1])) {
+        const triangle = new Set([vertex, edge[0], edge[1]]);
+        const triangleKey = [...triangle].sort().join(",");
+        triangles.set(triangleKey, triangle);
+      }
+    }
+  }
+
+  return new Set(triangles.values());
 }
