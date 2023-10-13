@@ -1,5 +1,5 @@
 import { describe, it, expect } from "bun:test";
-import { Graph, findCutVertices, findTriangles } from ".";
+import { Graph, findCutVertices, hasTriangle } from ".";
 
 describe("Graph - Finding Cut Vertices", () => {
   it("should find cut vertices in a simple graph", () => {
@@ -85,8 +85,8 @@ describe("finding triangles", () => {
       ])
     );
 
-    const triangles = findTriangles(graph);
-    expect(triangles).toStrictEqual(new Set([new Set([1, 2, 3])]));
+    const result = hasTriangle(graph);
+    expect(result).toBeTrue();
   });
 
   it("multiple triangles", () => {
@@ -102,10 +102,8 @@ describe("finding triangles", () => {
       ])
     );
 
-    const triangles = findTriangles(graph);
-    expect(triangles).toStrictEqual(
-      new Set([new Set([1, 2, 3]), new Set([2, 3, 4])])
-    );
+    const result = hasTriangle(graph);
+    expect(result).toBeTrue();
   });
 
   it("no triangles", () => {
@@ -118,7 +116,7 @@ describe("finding triangles", () => {
       ])
     );
 
-    const triangles = findTriangles(graph);
-    expect(triangles).toStrictEqual(new Set());
+    const result = hasTriangle(graph);
+    expect(result).toBeFalse();
   });
 });

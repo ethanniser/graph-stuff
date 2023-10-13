@@ -138,22 +138,17 @@ function createEdgeList(graph: Graph): Set<[number, number]> {
   return edgeList;
 }
 
-type Triangle = Set<number>;
-
-export function findTriangles(graph: Graph): Set<Triangle> {
-  const triangles = new Map<string, Triangle>();
+export function hasTriangle(graph: Graph): boolean {
   const vertices = graph.getVertices();
   const edges = createEdgeList(graph);
 
   for (const vertex of vertices) {
     for (const edge of edges) {
       if (graph.hasEdge(vertex, edge[0]) && graph.hasEdge(vertex, edge[1])) {
-        const triangle = new Set([vertex, edge[0], edge[1]]);
-        const triangleKey = [...triangle].sort().join(",");
-        triangles.set(triangleKey, triangle);
+        return true;
       }
     }
   }
 
-  return new Set(triangles.values());
+  return false;
 }
