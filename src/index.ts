@@ -152,3 +152,7 @@ export function hasTriangle(graph: Graph): boolean {
 
   return false;
 }
+
+export function findDiameter(graph: Graph): number {
+  throw new Error("Not implemented");
+}

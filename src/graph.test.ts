@@ -1,5 +1,5 @@
 import { describe, it, expect } from "bun:test";
-import { Graph, findCutVertices, hasTriangle } from ".";
+import { Graph, findCutVertices, findDiameter, hasTriangle } from ".";
 
 describe("Graph - Finding Cut Vertices", () => {
   it("should find cut vertices in a simple graph", () => {
@@ -118,5 +118,38 @@ describe("finding triangles", () => {
 
     const result = hasTriangle(graph);
     expect(result).toBeFalse();
+  });
+});
+
+describe("diameter of tree", () => {
+  it("basic", () => {
+    const tree = new Graph();
+    tree.addEdge(1, 2);
+    tree.addEdge(2, 3);
+    tree.addEdge(2, 4);
+    tree.addEdge(1, 5);
+    tree.addEdge(5, 6);
+    tree.addEdge(6, 7);
+    tree.addEdge(6, 8);
+    tree.addEdge(5, 9);
+
+    const diameter = findDiameter(tree);
+    expect(diameter).toBe(4);
+  });
+  it("subtree higher", () => {
+    const tree = new Graph();
+    tree.addEdge(1, 2);
+    tree.addEdge(2, 3);
+    tree.addEdge(3, 4);
+    tree.addEdge(4, 5);
+    tree.addEdge(5, 6);
+    tree.addEdge(2, 7);
+    tree.addEdge(7, 8);
+    tree.addEdge(8, 9);
+    tree.addEdge(1, 10);
+    tree.addEdge(10, 11);
+
+    const diameter = findDiameter(tree);
+    expect(diameter).toBe(8);
   });
 });
