@@ -1,5 +1,5 @@
 import { describe, it, expect } from "bun:test";
-import { Graph, findCutVertices, findDiameter, hasTriangle } from ".";
+import { Graph, Tree, findCutVertices, findDiameter, hasTriangle } from ".";
 
 describe("Graph - Finding Cut Vertices", () => {
   it("should find cut vertices in a simple graph", () => {
@@ -122,32 +122,57 @@ describe("finding triangles", () => {
 });
 
 describe("diameter of tree", () => {
-  it("basic", () => {
-    const tree = new Graph();
-    tree.addEdge(1, 2);
-    tree.addEdge(2, 3);
-    tree.addEdge(2, 4);
-    tree.addEdge(1, 5);
-    tree.addEdge(5, 6);
-    tree.addEdge(6, 7);
-    tree.addEdge(6, 8);
-    tree.addEdge(5, 9);
+  it("super basic", () => {
+    const graph = new Graph();
+    graph.addEdge(1, 2);
+    graph.addEdge(1, 3);
+
+
+    const tree = new Tree(graph, 1);
 
     const diameter = findDiameter(tree);
-    expect(diameter).toBe(4);
+    expect(diameter).toBe(2);
   });
+  it("basic", () => {
+    const graph = new Graph();
+    graph.addEdge(1, 2);
+    graph.addEdge(2, 3);
+    graph.addEdge(2, 4);
+    graph.addEdge(1, 5);
+    graph.addEdge(5, 6);
+    graph.addEdge(6, 7);
+    graph.addEdge(6, 8);
+    graph.addEdge(5, 9);
+
+    const tree = new Tree(graph, 1);
+
+    const diameter = findDiameter(tree);
+    expect(diameter).toBe(5);
+  });
+  it("line", () => {
+    const graph = new Graph();
+    graph.addEdge(1, 2);
+    graph.addEdge(2, 3);
+    graph.addEdge(3, 4);
+
+    const tree = new Tree(graph, 1);
+    const diameter = findDiameter(tree);
+    expect(diameter).toBe(3);
+  })
   it("subtree higher", () => {
-    const tree = new Graph();
-    tree.addEdge(1, 2);
-    tree.addEdge(2, 3);
-    tree.addEdge(3, 4);
-    tree.addEdge(4, 5);
-    tree.addEdge(5, 6);
-    tree.addEdge(2, 7);
-    tree.addEdge(7, 8);
-    tree.addEdge(8, 9);
-    tree.addEdge(1, 10);
-    tree.addEdge(10, 11);
+    const graph = new Graph();
+    graph.addEdge(1, 2);
+    graph.addEdge(2, 3);
+    graph.addEdge(3, 4);
+    graph.addEdge(4, 5);
+    graph.addEdge(5, 6);
+    graph.addEdge(2, 7);
+    graph.addEdge(7, 8);
+    graph.addEdge(8, 9);
+    graph.addEdge(1, 10);
+    graph.addEdge(10, 11);
+
+    const tree = new Tree(graph, 1);
 
     const diameter = findDiameter(tree);
     expect(diameter).toBe(8);

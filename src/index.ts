@@ -153,6 +153,57 @@ export function hasTriangle(graph: Graph): boolean {
   return false;
 }
 
-export function findDiameter(graph: Graph): number {
-  throw new Error("Not implemented");
+export class Tree {
+  constructor(public graph: Graph, public root: number) {}
+}
+
+export function findDiameter(tree: Tree): number {
+  const visited = new Set<number>();
+
+  function dfs(
+    current: number
+  ): Readonly<[maxDepth: number, maxDiameter: number | null]> {
+    console.log("VISITING", current);
+
+    visited.add(current);
+    const children = Array.from(tree.graph.getNeighbors(current)).filter(
+      (child) => !visited.has(child)
+    );
+    if (children.length === 0) {
+      console.log("LEAF", current);
+      return [0, null];
+    }
+    const childrenResults = children.map((child) => dfs(child));
+
+    if (childrenResults.length === 1) {
+      const result = [childrenResults[0][0] + 1, null] as const;
+      console.log("SINGLE CHILD", current, result);
+      return result;
+    }
+
+    console.log("CHILDREN", current, children, childrenResults);
+    const childDiameters = childrenResults
+      .map((childResult) => childResult[1])
+      .filter(Boolean);
+    const childDepths = childrenResults.map((childResult) => childResult[0]);
+
+    const tempMaxChildDiameter = Math.max(...childDiameters);
+    const maxChildDiameter =
+      tempMaxChildDiameter === -Infinity ? null : tempMaxChildDiameter;
+
+    const sortedDepths = childDepths.sort((a, b) => b - a);
+    const highestDepth = sortedDepths[0];
+    const bestDiameter = sortedDepths[0] + sortedDepths[1] + 2;
+
+    const result = [
+      highestDepth + 1,
+      Math.max(maxChildDiameter ?? 0, bestDiameter),
+    ] as const;
+    console.log("RESULT", current, result);
+    return result;
+  }
+
+  const result = dfs(tree.root);
+
+  return Math.max(result[0], result[1] ?? 0);
 }
