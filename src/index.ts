@@ -176,7 +176,8 @@ export function findDiameter(tree: Tree): number {
     const childrenResults = children.map((child) => dfs(child));
 
     if (childrenResults.length === 1) {
-      const result = [childrenResults[0][0] + 1, null] as const;
+      const depth = childrenResults[0][0] + 1;
+      const result = [depth, null] as const;
       console.log("SINGLE CHILD", current, result);
       return result;
     }
@@ -205,5 +206,5 @@ export function findDiameter(tree: Tree): number {
 
   const result = dfs(tree.root);
 
-  return Math.max(result[0], result[1] ?? 0);
+  return Math.max(result[0], result[1] ?? 0) - 1;
 }

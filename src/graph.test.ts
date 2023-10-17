@@ -131,7 +131,7 @@ describe("diameter of tree", () => {
     const tree = new Tree(graph, 1);
 
     const diameter = findDiameter(tree);
-    expect(diameter).toBe(2);
+    expect(diameter).toBe(1);
   });
   it("basic", () => {
     const graph = new Graph();
@@ -147,7 +147,7 @@ describe("diameter of tree", () => {
     const tree = new Tree(graph, 1);
 
     const diameter = findDiameter(tree);
-    expect(diameter).toBe(5);
+    expect(diameter).toBe(4);
   });
   it("line", () => {
     const graph = new Graph();
@@ -157,7 +157,7 @@ describe("diameter of tree", () => {
 
     const tree = new Tree(graph, 1);
     const diameter = findDiameter(tree);
-    expect(diameter).toBe(3);
+    expect(diameter).toBe(2);
   })
   it("subtree higher", () => {
     const graph = new Graph();
@@ -169,12 +169,13 @@ describe("diameter of tree", () => {
     graph.addEdge(2, 7);
     graph.addEdge(7, 8);
     graph.addEdge(8, 9);
-    graph.addEdge(1, 10);
-    graph.addEdge(10, 11);
+    graph.addEdge(9, 10);
+    graph.addEdge(1, 11);
+    graph.addEdge(11, 12);
 
     const tree = new Tree(graph, 1);
 
     const diameter = findDiameter(tree);
-    expect(diameter).toBe(8);
+    expect(diameter).toBe(7);
   });
 });
