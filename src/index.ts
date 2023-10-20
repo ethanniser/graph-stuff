@@ -75,6 +75,16 @@ export class Graph {
       toNeighbors.has(from)
     );
   }
+
+  copy(): Graph {
+    const newGraph = new Graph();
+
+    for (const [key, value] of this.adjacencyList) {
+      newGraph.adjacencyList.set(key, new Set(value));
+    }
+
+    return newGraph;
+  }
 }
 
 export function findCutVertices(graph: Graph): Set<number> {
@@ -207,4 +217,56 @@ export function findDiameter(tree: Tree): number {
   const result = dfs(tree.root);
 
   return Math.max(result[0], result[1] ?? 0) - 1;
+}
+
+type IdkReturn =
+  | {
+      found: true;
+      graph: Graph;
+    }
+  | {
+      found: false;
+      graph: undefined;
+    };
+
+export function findInducedSubgraph(graph: Graph, k: number): IdkReturn {
+  const visited = new Set<number>();
+  const markedForDeletion = new Set<number>();
+  function dfs(node: number): boolean {
+    visited.add(node);
+
+    let degree = graph.getDegree(node);
+
+    Array.from(graph.getNeighbors(node))
+      .filter((neighbor) => !visited.has(neighbor))
+      .filter((neighbor) => !markedForDeletion.has(neighbor))
+      .map((neighbor) => {
+        if (dfs(neighbor)) {
+          degree--;
+        }
+      });
+
+    if (degree < k) {
+      markedForDeletion.add(node);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  for (const vertex of graph.getVertices()) {
+    if (!visited.has(vertex)) {
+      dfs(vertex);
+    }
+  }
+
+  const newGraph = graph.copy();
+  for (const vertex of markedForDeletion) {
+    newGraph.removeVertex(vertex);
+  }
+  if (newGraph.size() === 0) {
+    return { found: false, graph: undefined };
+  } else {
+    return { found: true, graph: newGraph };
+  }
 }
