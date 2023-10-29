@@ -219,7 +219,7 @@ export function findDiameter(tree: Tree): number {
   return Math.max(result[0], result[1] ?? 0) - 1;
 }
 
-type IdkReturn =
+type SubGraphReturn =
   | {
       found: true;
       graph: Graph;
@@ -229,44 +229,37 @@ type IdkReturn =
       graph: undefined;
     };
 
-export function findInducedSubgraph(graph: Graph, k: number): IdkReturn {
-  const visited = new Set<number>();
-  const markedForDeletion = new Set<number>();
-  function dfs(node: number): boolean {
-    visited.add(node);
+export function findInducedSubgraph(graph: Graph, k: number): SubGraphReturn {
+  const subgraph = graph.copy();
 
-    let degree = graph.getDegree(node);
+  const queue: number[] = [];
 
-    Array.from(graph.getNeighbors(node))
-      .filter((neighbor) => !visited.has(neighbor))
-      .filter((neighbor) => !markedForDeletion.has(neighbor))
-      .map((neighbor) => {
-        if (dfs(neighbor)) {
-          degree--;
+  subgraph.getVertices().forEach((vertex) => {
+    if (subgraph.getDegree(vertex) < k) {
+      queue.push(vertex);
+    }
+  });
+
+  while (queue.length > 0) {
+    const vertex = queue.shift()!;
+    const neighbors = subgraph.getNeighbors(vertex);
+
+    neighbors.forEach((neighbor) => {
+      if (subgraph.contains(neighbor)) {
+        subgraph.removeEdge(vertex, neighbor);
+
+        if (subgraph.getDegree(neighbor) < k) {
+          queue.push(neighbor);
         }
-      });
+      }
+    });
 
-    if (degree < k) {
-      markedForDeletion.add(node);
-      return true;
-    } else {
-      return false;
-    }
+    subgraph.removeVertex(vertex);
   }
 
-  for (const vertex of graph.getVertices()) {
-    if (!visited.has(vertex)) {
-      dfs(vertex);
-    }
-  }
-
-  const newGraph = graph.copy();
-  for (const vertex of markedForDeletion) {
-    newGraph.removeVertex(vertex);
-  }
-  if (newGraph.size() === 0) {
+  if (subgraph.isEmpty()) {
     return { found: false, graph: undefined };
   } else {
-    return { found: true, graph: newGraph };
+    return { found: true, graph: subgraph };
   }
 }

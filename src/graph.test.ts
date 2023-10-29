@@ -1,5 +1,12 @@
 import { describe, it, expect } from "bun:test";
-import { Graph, Tree, findCutVertices, findDiameter, findInducedSubgraph, hasTriangle } from ".";
+import {
+  Graph,
+  Tree,
+  findCutVertices,
+  findDiameter,
+  findInducedSubgraph,
+  hasTriangle,
+} from ".";
 
 describe("Graph - Finding Cut Vertices", () => {
   it("should find cut vertices in a simple graph", () => {
@@ -127,7 +134,6 @@ describe("diameter of tree", () => {
     graph.addEdge(1, 2);
     graph.addEdge(1, 3);
 
-
     const tree = new Tree(graph, 1);
 
     const diameter = findDiameter(tree);
@@ -158,7 +164,7 @@ describe("diameter of tree", () => {
     const tree = new Tree(graph, 1);
     const diameter = findDiameter(tree);
     expect(diameter).toBe(2);
-  })
+  });
   it("subtree higher", () => {
     const graph = new Graph();
     graph.addEdge(1, 2);
@@ -203,18 +209,17 @@ describe("induced subgraph", () => {
     expectedThreeSubgraph.addEdge(4, 7);
     expectedThreeSubgraph.addEdge(6, 7);
 
-    // const resultTwo = findInducedSubgraph(graph, 2);
-    // expect(resultTwo.found).toBeTrue();
-    // expect(resultTwo.graph).toStrictEqual(resultTwo.graph);
+    const resultTwo = findInducedSubgraph(graph, 2);
+    expect(resultTwo.found).toBeTrue();
+    expect(resultTwo.graph).toStrictEqual(resultTwo.graph);
 
     const resultThree = findInducedSubgraph(graph, 3);
     expect(resultThree.found).toBeTrue();
     expect(resultThree.graph).toStrictEqual(expectedThreeSubgraph);
 
-    // const resultFour = findInducedSubgraph(graph, 4);
-    // expect(resultFour.found).toBeFalse();
-    
-  })
+    const resultFour = findInducedSubgraph(graph, 4);
+    expect(resultFour.found).toBeFalse();
+  });
   it("disconnected solution", () => {
     const graph = new Graph();
     graph.addEdge(1, 2);
@@ -252,5 +257,5 @@ describe("induced subgraph", () => {
     const resultThree = findInducedSubgraph(graph, 3);
     expect(resultThree.found).toBeTrue();
     expect(resultThree.graph).toStrictEqual(expectedThreeSubgraph);
-  })
-})
+  });
+});
